@@ -224,6 +224,9 @@
   .z-60 {
     z-index: 60;
   }
+  .col-span-2 {
+    grid-column: span 2 / span 2;
+  }
   .mx-1\.5 {
     margin-inline: calc(var(--spacing) * 1.5);
   }
@@ -262,6 +265,9 @@
   }
   .flex {
     display: flex;
+  }
+  .grid {
+    display: grid;
   }
   .inline-flex {
     display: inline-flex;
@@ -302,6 +308,9 @@
   .cursor-pointer {
     cursor: pointer;
   }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .items-center {
     align-items: center;
   }
@@ -313,6 +322,9 @@
   }
   .justify-end {
     justify-content: flex-end;
+  }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
   }
   .space-y-2 {
     :where(& > :not(:last-child)) {
@@ -547,9 +559,19 @@
       margin-left: calc(var(--spacing) * 64);
     }
   }
+  .md\:col-span-1 {
+    @media (width >= 48rem) {
+      grid-column: span 1 / span 1;
+    }
+  }
   .md\:mt-14 {
     @media (width >= 48rem) {
       margin-top: calc(var(--spacing) * 14);
+    }
+  }
+  .md\:mb-4 {
+    @media (width >= 48rem) {
+      margin-bottom: calc(var(--spacing) * 4);
     }
   }
   .md\:w-1\/3 {

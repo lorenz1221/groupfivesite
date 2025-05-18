@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Genders, Users
 from django.contrib.auth.hashers import make_password
+from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
 def gender_list(request):
@@ -126,3 +128,23 @@ def add_user(request):
             return render(request, 'user/AddUser.html', data)
     except Exception as e:
         return HttpResponse(f'Error occurred during add user: {e}')
+
+
+@csrf_protect
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            messages.success(request, f"Welcome back, {username}!")
+            return redirect('home')  # This must match a URL pattern name
+        else:
+            messages.error(request, "Invalid username or password.")
+
+    return render(request, 'login.html')  # Template path should match your template
+
+# Optional home view (if not already defined)

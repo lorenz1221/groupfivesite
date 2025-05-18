@@ -55,7 +55,7 @@ ROOT_URLCONF = 'groupfivesite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['/path/to/your/project/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

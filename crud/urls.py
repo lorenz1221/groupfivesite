@@ -7,5 +7,7 @@ urlpatterns = [
     path('gender/edit/<int:genderId>', views.edit_gender),
     path('gender/delete/<int:genderId>', views.delete_gender),
     path('user/list', views.user_list),
-    path('user/add', views.add_user)
+    path('user/add', views.add_user),
+    path('user/login', views.login_view)
+    
 ]

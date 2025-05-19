@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Genders, Users
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
 def gender_list(request):
@@ -126,3 +128,52 @@ def add_user(request):
             return render(request, 'user/AddUser.html', data)
     except Exception as e:
         return HttpResponse(f'Error occurred during add user: {e}')
+
+
+def login_view(request):
+    try:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            
+            try:
+                user = Users.objects.get(username=username)
+                if check_password(password, user.password):
+                    # Set session data
+                    request.session['user_id'] = user.user_id
+                    request.session['username'] = user.username
+                    request.session['is_authenticated'] = True
+                    messages.success(request, f'Welcome Master {user.full_name}!')
+                    return redirect('/gender/list')
+                else:
+                    messages.error(request, 'Invalid username or password.')
+            except Users.DoesNotExist:
+                messages.error(request, 'Invalid username or password.')
+            
+            return render(request, 'user/login.html')
+        
+        # GET request - show login page regardless of authentication status
+        return render(request, 'user/login.html')
+    except Exception as e:
+        messages.error(request, f'An error occurred: {str(e)}')
+        return render(request, 'user/login.html')
+    
+#Delete user
+
+def delete_user(request, userId):
+    try:
+        if request.method == 'POST':
+            userObj = Users.objects.get(pk=userId)  # SELECT * FROM tbl_users WHERE user_id = userId;
+            userObj.delete()  # DELETE FROM tbl_users WHERE user_id = userId;
+
+            messages.success(request, 'User deleted successfully!')
+            return redirect('/user/list')
+        else:
+            userObj = Users.objects.get(pk=userId)  # SELECT * FROM tbl_users WHERE user_id = userId;
+            
+            data = {
+                'user': userObj
+            }
+            return render(request, 'user/DeleteUser.html', data)
+    except Exception as e:
+        return HttpResponse(f'Error occurred during delete user: {e}')
